@@ -116,16 +116,16 @@ The Drizzle schema in `lib/db/src/schema` includes:
 
 Seeded data lives in `scripts/src/seed.ts`. Supporting notices are in `data/`.
 
-## UI Previews
+## Demo Output Screenshots
 
-These are UI previews based on implemented screen layouts, not captured browser screenshots.
+The original export did not include raster screenshot files. To keep the demo output visible in the README, this repository includes preserved SVG previews based on the implemented screens. Replace these with captured `screenshots/*.png` files after running the seeded local app if you want browser-captured images.
 
-![Login UI preview](docs/previews/01-login.svg)
-![Employer dashboard UI preview](docs/previews/02-employer-dashboard.svg)
-![Employee intake UI preview](docs/previews/03-employee-intake.svg)
-![Recommendation options UI preview](docs/previews/04-recommendations.svg)
-![Consultant review UI preview](docs/previews/05-consultant-review.svg)
-![Admin audit UI preview](docs/previews/06-admin-audit.svg)
+![Login demo output preview](docs/previews/01-login.svg)
+![Employer dashboard demo output preview](docs/previews/02-employer-dashboard.svg)
+![Employee intake demo output preview](docs/previews/03-employee-intake.svg)
+![Recommendation options demo output preview](docs/previews/04-recommendations.svg)
+![Consultant review demo output preview](docs/previews/05-consultant-review.svg)
+![Admin audit demo output preview](docs/previews/06-admin-audit.svg)
 
 ## API Overview
 
@@ -203,7 +203,7 @@ Run tests after `pnpm seed` so the synthetic database records exist. If PostgreS
 - Demo plan samples are not official Marketplace data.
 - The Coverage Guide chat is optional and returns a local fallback unless `OPENAI_API_KEY` is configured.
 - Email delivery is optional and logs previews unless `RESEND_API_KEY` is configured.
-- UI previews are not browser screenshots.
+- Demo output previews are SVG assets, not browser-captured PNG screenshots.
 - This demo is not production hardened for regulated data or compliance use.
 
 ## Unpack And Run An Archive
