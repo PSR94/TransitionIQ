@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="600" viewBox="0 0 960 600" role="img" aria-labelledby="title">
+  <title id="title">UI preview based on implemented admin audit layout</title>
+  <rect width="960" height="600" fill="#f8fafc"/>
+  <text x="80" y="70" font-family="Arial" font-size="30" font-weight="700" fill="#0f172a">Audit Logs</text>
+  <rect x="80" y="120" width="800" height="380" rx="14" fill="#fff" stroke="#e2e8f0"/>
+  <g fill="#f8fafc" stroke="#e2e8f0">
+    <rect x="110" y="165" width="740" height="48" rx="8"/>
+    <rect x="110" y="235" width="740" height="48" rx="8"/>
+    <rect x="110" y="305" width="740" height="48" rx="8"/>
+    <rect x="110" y="375" width="740" height="48" rx="8"/>
+  </g>
+  <rect x="135" y="178" width="100" height="22" rx="6" fill="#dbeafe"/>
+  <rect x="135" y="248" width="100" height="22" rx="6" fill="#dcfce7"/>
+  <rect x="135" y="318" width="100" height="22" rx="6" fill="#ede9fe"/>
+  <rect x="135" y="388" width="100" height="22" rx="6" fill="#fee2e2"/>
+</svg>

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="560" viewBox="0 0 1100 560" role="img" aria-labelledby="title">
+  <title id="title">Consultant Review Workflow</title>
+  <rect width="1100" height="560" fill="#f8fafc"/>
+  <text x="55" y="70" font-family="Arial" font-size="32" font-weight="700" fill="#0f172a">Consultant review workflow</text>
+  <g font-family="Arial">
+    <rect x="80" y="150" width="210" height="125" rx="14" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+    <rect x="345" y="150" width="210" height="125" rx="14" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+    <rect x="610" y="100" width="210" height="125" rx="14" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+    <rect x="610" y="300" width="210" height="125" rx="14" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+    <rect x="875" y="150" width="170" height="125" rx="14" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+    <text x="112" y="198" font-size="18" font-weight="700" fill="#075985">Review queue</text>
+    <text x="380" y="198" font-size="18" font-weight="700" fill="#713f12">Detail review</text>
+    <text x="650" y="148" font-size="18" font-weight="700" fill="#14532d">Approve</text>
+    <text x="650" y="348" font-size="18" font-weight="700" fill="#7f1d1d">Reject or revise</text>
+    <text x="915" y="198" font-size="18" font-weight="700" fill="#4c1d95">Audit log</text>
+    <text x="112" y="232" font-size="14" fill="#075985">Flags and cases</text>
+    <text x="380" y="232" font-size="14" fill="#713f12">Intake, plans, notes</text>
+    <text x="650" y="182" font-size="14" fill="#14532d">Release to employee</text>
+    <text x="650" y="382" font-size="14" fill="#7f1d1d">Return for new estimate</text>
+    <text x="915" y="232" font-size="14" fill="#4c1d95">Trace every action</text>
+  </g>
+  <g stroke="#334155" stroke-width="3" fill="none" marker-end="url(#arrow)">
+    <path d="M290 212 H345"/>
+    <path d="M555 212 C585 190 590 165 610 162"/>
+    <path d="M555 212 C585 260 590 335 610 362"/>
+    <path d="M820 162 C850 170 855 190 875 202"/>
+    <path d="M820 362 C850 330 855 250 875 222"/>
+  </g>
+  <defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2 2 L10 6 L2 10 Z" fill="#334155"/></marker></defs>
+</svg>

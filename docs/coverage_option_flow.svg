@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="620" viewBox="0 0 1100 620" role="img" aria-labelledby="title">
+  <title id="title">Coverage Option Estimate Flow</title>
+  <rect width="1100" height="620" fill="#f0fdf4"/>
+  <text x="55" y="70" font-family="Arial" font-size="32" font-weight="700" fill="#052e16">Coverage option estimate flow</text>
+  <g font-family="Arial" font-size="15">
+    <rect x="80" y="145" width="250" height="110" rx="14" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+    <text x="110" y="190" font-weight="700" fill="#14532d">Employee intake</text>
+    <text x="110" y="222" fill="#166534">Age, ZIP, budget, usage, priorities</text>
+    <rect x="425" y="145" width="250" height="110" rx="14" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+    <text x="455" y="190" font-weight="700" fill="#1e3a8a">Demo plan samples</text>
+    <text x="455" y="222" fill="#1e40af">Premiums, deductibles, metal tiers</text>
+    <rect x="770" y="145" width="250" height="110" rx="14" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+    <text x="800" y="190" font-weight="700" fill="#78350f">COBRA estimate</text>
+    <text x="800" y="222" fill="#92400e">HR-provided monthly premium</text>
+    <rect x="300" y="350" width="500" height="120" rx="16" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+    <text x="335" y="398" font-weight="700" fill="#0f172a">Rule-assisted scoring</text>
+    <text x="335" y="432" fill="#334155">Cost comparison, budget fit, expected usage, warning flags</text>
+    <rect x="375" y="520" width="350" height="58" rx="12" fill="#111827"/>
+    <text x="418" y="556" fill="#f8fafc" font-weight="700">Ranked options for consultant review</text>
+  </g>
+  <g stroke="#14532d" stroke-width="3" fill="none" marker-end="url(#arrow)">
+    <path d="M205 255 C250 310 330 340 400 350"/>
+    <path d="M550 255 V350"/>
+    <path d="M895 255 C850 310 770 340 700 350"/>
+    <path d="M550 470 V520"/>
+  </g>
+  <defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2 2 L10 6 L2 10 Z" fill="#14532d"/></marker></defs>
+</svg>

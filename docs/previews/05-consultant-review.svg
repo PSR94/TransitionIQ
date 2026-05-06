@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="600" viewBox="0 0 960 600" role="img" aria-labelledby="title">
+  <title id="title">UI preview based on implemented consultant review layout</title>
+  <rect width="960" height="600" fill="#f8fafc"/>
+  <text x="70" y="65" font-family="Arial" font-size="30" font-weight="700" fill="#0f172a">Consultant Review</text>
+  <rect x="70" y="105" width="560" height="430" rx="14" fill="#fff" stroke="#e2e8f0"/>
+  <rect x="665" y="105" width="220" height="430" rx="14" fill="#fff" stroke="#e2e8f0"/>
+  <rect x="100" y="145" width="200" height="28" rx="6" fill="#dbeafe"/>
+  <rect x="100" y="210" width="480" height="75" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
+  <rect x="100" y="315" width="480" height="75" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
+  <rect x="705" y="160" width="140" height="44" rx="8" fill="#16a34a"/>
+  <rect x="705" y="225" width="140" height="44" rx="8" fill="#f59e0b"/>
+  <rect x="705" y="290" width="140" height="44" rx="8" fill="#dc2626"/>
+</svg>

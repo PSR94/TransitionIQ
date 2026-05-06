@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">TransitionIQ Local Architecture</title>
+  <desc id="desc">React web app, Express API, PostgreSQL database, deterministic estimate engine, optional OpenAI adapter, and package tooling.</desc>
+  <rect width="1200" height="720" fill="#f8fafc"/>
+  <text x="60" y="70" font-family="Arial" font-size="34" font-weight="700" fill="#0f172a">TransitionIQ local-first architecture</text>
+  <text x="60" y="105" font-family="Arial" font-size="16" fill="#475569">Synthetic demo data, PostgreSQL, rule-assisted estimates, consultant review, optional conversational adapter</text>
+  <g font-family="Arial" font-size="16" font-weight="700">
+    <rect x="70" y="160" width="260" height="380" rx="16" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+    <text x="105" y="205" fill="#1e3a8a">React + Vite Web</text>
+    <text x="105" y="250" font-size="14" font-weight="400" fill="#1e40af">Employer dashboard</text>
+    <text x="105" y="285" font-size="14" font-weight="400" fill="#1e40af">Employee intake and options</text>
+    <text x="105" y="320" font-size="14" font-weight="400" fill="#1e40af">Consultant review queue</text>
+    <text x="105" y="355" font-size="14" font-weight="400" fill="#1e40af">Admin audit and evaluations</text>
+    <rect x="470" y="145" width="300" height="410" rx="16" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+    <text x="510" y="190" fill="#14532d">Express API</text>
+    <text x="510" y="235" font-size="14" font-weight="400" fill="#166534">JWT demo login</text>
+    <text x="510" y="270" font-size="14" font-weight="400" fill="#166534">Case and stipend workflows</text>
+    <text x="510" y="305" font-size="14" font-weight="400" fill="#166534">Deterministic option estimates</text>
+    <text x="510" y="340" font-size="14" font-weight="400" fill="#166534">Consultant review actions</text>
+    <text x="510" y="375" font-size="14" font-weight="400" fill="#166534">Audit log writes</text>
+    <rect x="890" y="165" width="250" height="150" rx="16" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+    <text x="925" y="210" fill="#78350f">PostgreSQL</text>
+    <text x="925" y="250" font-size="14" font-weight="400" fill="#92400e">Drizzle schema</text>
+    <text x="925" y="282" font-size="14" font-weight="400" fill="#92400e">Synthetic seed data</text>
+    <rect x="890" y="390" width="250" height="120" rx="16" fill="#f3e8ff" stroke="#9333ea" stroke-width="2"/>
+    <text x="925" y="435" fill="#581c87">Optional OpenAI</text>
+    <text x="925" y="475" font-size="14" font-weight="400" fill="#6b21a8">Coverage Guide chat only</text>
+  </g>
+  <g stroke="#334155" stroke-width="3" fill="none" marker-end="url(#arrow)">
+    <path d="M330 350 C390 350 410 350 470 350"/>
+    <path d="M770 260 C820 250 840 245 890 240"/>
+    <path d="M770 430 C820 430 840 435 890 450"/>
+  </g>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2 2 L10 6 L2 10 Z" fill="#334155"/>
+    </marker>
+  </defs>
+  <rect x="70" y="600" width="1070" height="60" rx="12" fill="#0f172a"/>
+  <text x="105" y="637" font-family="Arial" font-size="16" fill="#e2e8f0">Local commands: pnpm install -> pnpm seed -> pnpm dev -> pnpm test -> pnpm build -> pnpm package</text>
+</svg>
