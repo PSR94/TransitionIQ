@@ -1,0 +1,2105 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: TransitionIQ Health API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: auth
+    description: Authentication
+  - name: employer
+    description: Employer management
+  - name: employee
+    description: Employee operations
+  - name: recommendations
+    description: Coverage recommendations
+  - name: assistant
+    description: AI Coverage Guide assistant
+  - name: consultant
+    description: Consultant review flows
+  - name: admin
+    description: Platform administration
+  - name: plans
+    description: Health plan data
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  # Auth
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginBody"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout current session
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /auth/session:
+    get:
+      operationId: getSession
+      tags: [auth]
+      summary: Get current session
+      responses:
+        "200":
+          description: Session info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/demo-login:
+    post:
+      operationId: demoLogin
+      tags: [auth]
+      summary: Login as a demo user by role
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DemoLoginBody"
+      responses:
+        "200":
+          description: Demo login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+
+  # Employer
+  /employer/dashboard:
+    get:
+      operationId: getEmployerDashboard
+      tags: [employer]
+      summary: Get employer dashboard summary
+      responses:
+        "200":
+          description: Dashboard data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployerDashboard"
+
+  /employer/cases:
+    get:
+      operationId: listEmployerCases
+      tags: [employer]
+      summary: List all transition cases for employer
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: List of cases
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CaseListResponse"
+    post:
+      operationId: createCase
+      tags: [employer]
+      summary: Create a new transition case
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCaseBody"
+      responses:
+        "201":
+          description: Case created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransitionCase"
+
+  /employer/cases/{caseId}:
+    get:
+      operationId: getEmployerCase
+      tags: [employer]
+      summary: Get a specific transition case
+      parameters:
+        - name: caseId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Case details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransitionCase"
+    patch:
+      operationId: updateCase
+      tags: [employer]
+      summary: Update transition case
+      parameters:
+        - name: caseId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCaseBody"
+      responses:
+        "200":
+          description: Updated case
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransitionCase"
+
+  /employer/cases/{caseId}/invite:
+    post:
+      operationId: sendCaseInvite
+      tags: [employer]
+      summary: Send invite to employee for this case
+      parameters:
+        - name: caseId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Invite sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /employer/analytics:
+    get:
+      operationId: getEmployerAnalytics
+      tags: [employer]
+      summary: Get employer aggregate analytics
+      responses:
+        "200":
+          description: Analytics data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployerAnalytics"
+
+  /employer/roi-simulation:
+    post:
+      operationId: runRoiSimulation
+      tags: [employer]
+      summary: Run employer ROI simulation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoiSimulationInput"
+      responses:
+        "200":
+          description: ROI simulation results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RoiSimulationResult"
+
+  /employer/stipends:
+    get:
+      operationId: listStipends
+      tags: [employer]
+      summary: List stipend policies for employer
+      responses:
+        "200":
+          description: Stipend policies
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StipendListResponse"
+    post:
+      operationId: createStipend
+      tags: [employer]
+      summary: Create a stipend policy
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateStipendBody"
+      responses:
+        "201":
+          description: Stipend policy created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StipendPolicy"
+
+  /employer/employees:
+    get:
+      operationId: listEmployerEmployees
+      tags: [employer]
+      summary: List employees for employer
+      responses:
+        "200":
+          description: Employee list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployeeListResponse"
+
+  # Employee
+  /employee/dashboard:
+    get:
+      operationId: getEmployeeDashboard
+      tags: [employee]
+      summary: Get employee transition dashboard
+      responses:
+        "200":
+          description: Employee dashboard data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployeeDashboard"
+
+  /employee/intake:
+    get:
+      operationId: getIntake
+      tags: [employee]
+      summary: Get existing intake data
+      responses:
+        "200":
+          description: Intake data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthIntake"
+    post:
+      operationId: submitIntake
+      tags: [employee]
+      summary: Submit or update health intake form
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubmitIntakeBody"
+      responses:
+        "200":
+          description: Intake saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthIntake"
+
+  /employee/recommendations:
+    get:
+      operationId: getEmployeeRecommendations
+      tags: [employee]
+      summary: Get personalized coverage recommendations
+      responses:
+        "200":
+          description: Recommendations
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecommendationResponse"
+
+  /employee/recommendations/generate:
+    post:
+      operationId: generateRecommendations
+      tags: [employee]
+      summary: Trigger recommendation generation
+      responses:
+        "200":
+          description: Recommendations generated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecommendationResponse"
+
+  /employee/compare:
+    get:
+      operationId: getCompareOptions
+      tags: [employee]
+      summary: Get plan comparison data
+      parameters:
+        - name: planIds
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Plan comparison data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlanComparisonResponse"
+
+  /employee/checklist:
+    get:
+      operationId: getChecklist
+      tags: [employee]
+      summary: Get employee transition checklist
+      responses:
+        "200":
+          description: Checklist items
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChecklistResponse"
+    patch:
+      operationId: updateChecklistItem
+      tags: [employee]
+      summary: Update a checklist item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateChecklistBody"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /employee/support-request:
+    post:
+      operationId: submitSupportRequest
+      tags: [employee]
+      summary: Submit a consultant support request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SupportRequestBody"
+      responses:
+        "201":
+          description: Request submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /employee/survey:
+    post:
+      operationId: submitSurvey
+      tags: [employee]
+      summary: Submit satisfaction survey
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SurveyBody"
+      responses:
+        "201":
+          description: Survey submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /employee/stipend:
+    get:
+      operationId: getEmployeeStipend
+      tags: [employee]
+      summary: Get employee's applicable stipend details
+      responses:
+        "200":
+          description: Stipend info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployeeStipendInfo"
+
+  # AI Assistant
+  /assistant/chat:
+    post:
+      operationId: sendChatMessage
+      tags: [assistant]
+      summary: Send a message to the Coverage Guide AI assistant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatMessageBody"
+      responses:
+        "200":
+          description: Assistant response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatResponse"
+
+  /assistant/conversations:
+    get:
+      operationId: listConversations
+      tags: [assistant]
+      summary: List conversation history
+      responses:
+        "200":
+          description: Conversations
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConversationsResponse"
+
+  /assistant/conversations/{conversationId}:
+    get:
+      operationId: getConversation
+      tags: [assistant]
+      summary: Get a specific conversation with messages
+      parameters:
+        - name: conversationId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Conversation with messages
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConversationDetail"
+
+  # Recommendations
+  /recommendations/{recommendationId}:
+    get:
+      operationId: getRecommendation
+      tags: [recommendations]
+      summary: Get recommendation by ID
+      parameters:
+        - name: recommendationId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Recommendation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecommendationResponse"
+
+  /recommendations/{recommendationId}/review:
+    post:
+      operationId: reviewRecommendation
+      tags: [recommendations]
+      summary: Consultant review of recommendation
+      parameters:
+        - name: recommendationId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewBody"
+      responses:
+        "200":
+          description: Review submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  # Consultant
+  /consultant/dashboard:
+    get:
+      operationId: getConsultantDashboard
+      tags: [consultant]
+      summary: Get consultant dashboard
+      responses:
+        "200":
+          description: Consultant dashboard
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConsultantDashboard"
+
+  /consultant/reviews:
+    get:
+      operationId: listReviews
+      tags: [consultant]
+      summary: List cases needing consultant review
+      responses:
+        "200":
+          description: Review queue
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReviewQueueResponse"
+
+  /consultant/reviews/{caseId}:
+    get:
+      operationId: getReviewCase
+      tags: [consultant]
+      summary: Get full case for consultant review
+      parameters:
+        - name: caseId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Case review data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConsultantCaseReview"
+
+  # Admin
+  /admin/dashboard:
+    get:
+      operationId: getAdminDashboard
+      tags: [admin]
+      summary: Get platform admin dashboard
+      responses:
+        "200":
+          description: Admin dashboard
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminDashboard"
+
+  /admin/employers:
+    get:
+      operationId: listAllEmployers
+      tags: [admin]
+      summary: List all employers
+      responses:
+        "200":
+          description: Employers
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmployerListResponse"
+
+  /admin/users:
+    get:
+      operationId: listAllUsers
+      tags: [admin]
+      summary: List all users
+      responses:
+        "200":
+          description: Users
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserListResponse"
+
+  /admin/audit-logs:
+    get:
+      operationId: getAuditLogs
+      tags: [admin]
+      summary: Get audit logs
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 100
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: Audit logs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuditLogResponse"
+
+  /admin/evaluations:
+    get:
+      operationId: getEvaluations
+      tags: [admin]
+      summary: Get AI evaluation results
+      responses:
+        "200":
+          description: Evaluation results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EvaluationListResponse"
+
+  /admin/evaluations/run:
+    post:
+      operationId: runEvaluations
+      tags: [admin]
+      summary: Run AI evaluation suite
+      responses:
+        "200":
+          description: Evaluation run results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EvaluationRunResult"
+
+  /admin/knowledge-base:
+    get:
+      operationId: listKnowledgeDocs
+      tags: [admin]
+      summary: List knowledge base documents
+      responses:
+        "200":
+          description: Knowledge documents
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KnowledgeDocListResponse"
+
+  /admin/recommendation-settings:
+    get:
+      operationId: getRecommendationSettings
+      tags: [admin]
+      summary: Get recommendation engine weights
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecommendationSettings"
+    patch:
+      operationId: updateRecommendationSettings
+      tags: [admin]
+      summary: Update recommendation engine weights
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RecommendationSettings"
+      responses:
+        "200":
+          description: Updated settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecommendationSettings"
+
+  /admin/plan-data:
+    get:
+      operationId: listPlanData
+      tags: [admin]
+      summary: List health plans in the system
+      parameters:
+        - name: state
+          in: query
+          schema:
+            type: string
+        - name: metalLevel
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+      responses:
+        "200":
+          description: Plan data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlanDataResponse"
+
+  # Plans
+  /plans:
+    get:
+      operationId: listPlans
+      tags: [plans]
+      summary: Search health plans
+      parameters:
+        - name: state
+          in: query
+          schema:
+            type: string
+        - name: zipCode
+          in: query
+          schema:
+            type: string
+        - name: metalLevel
+          in: query
+          schema:
+            type: string
+        - name: planType
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Plans
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlanDataResponse"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required: [status]
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+      required: [error]
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required: [message]
+
+    LoginBody:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required: [email, password]
+
+    DemoLoginBody:
+      type: object
+      properties:
+        role:
+          type: string
+          enum: [employer, employee, consultant, admin]
+      required: [role]
+
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          $ref: "#/components/schemas/UserProfile"
+      required: [token, user]
+
+    SessionResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/UserProfile"
+        authenticated:
+          type: boolean
+      required: [authenticated]
+
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+          enum: [employer, employee, consultant, admin]
+        employerId:
+          type: integer
+          nullable: true
+        createdAt:
+          type: string
+      required: [id, email, name, role]
+
+    TransitionCase:
+      type: object
+      properties:
+        id:
+          type: integer
+        employeeId:
+          type: integer
+        employerId:
+          type: integer
+        employeeName:
+          type: string
+        employeeEmail:
+          type: string
+        departureType:
+          type: string
+          enum: [layoff, voluntary, retirement, reduction_in_hours, family_coverage_loss, life_event]
+        status:
+          type: string
+          enum: [draft, invited, invite_opened, intake_started, intake_completed, recommendations_generated, consultant_review_needed, recommendations_released, plan_selected, closed]
+        coverageEndDate:
+          type: string
+          nullable: true
+        cobraPremiumEstimate:
+          type: number
+          nullable: true
+        employeeZipCode:
+          type: string
+          nullable: true
+        employmentStatus:
+          type: string
+          nullable: true
+        familyCoverage:
+          type: boolean
+        estimatedSavingsMin:
+          type: number
+          nullable: true
+        estimatedSavingsMax:
+          type: number
+          nullable: true
+        inviteSentAt:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required: [id, employeeId, employerId, employeeName, employeeEmail, departureType, status, familyCoverage, createdAt, updatedAt]
+
+    CreateCaseBody:
+      type: object
+      properties:
+        employeeName:
+          type: string
+        employeeEmail:
+          type: string
+        departureType:
+          type: string
+          enum: [layoff, voluntary, retirement, reduction_in_hours, family_coverage_loss, life_event]
+        coverageEndDate:
+          type: string
+          nullable: true
+        cobraPremiumEstimate:
+          type: number
+          nullable: true
+        employeeZipCode:
+          type: string
+          nullable: true
+        employmentStatus:
+          type: string
+          nullable: true
+        familyCoverage:
+          type: boolean
+      required: [employeeName, employeeEmail, departureType, familyCoverage]
+
+    UpdateCaseBody:
+      type: object
+      properties:
+        status:
+          type: string
+        departureType:
+          type: string
+        coverageEndDate:
+          type: string
+          nullable: true
+        cobraPremiumEstimate:
+          type: number
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+
+    CaseListResponse:
+      type: object
+      properties:
+        cases:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransitionCase"
+        total:
+          type: integer
+      required: [cases, total]
+
+    EmployerDashboard:
+      type: object
+      properties:
+        totalCases:
+          type: integer
+        activeCases:
+          type: integer
+        pendingIntake:
+          type: integer
+        pendingReview:
+          type: integer
+        closedCases:
+          type: integer
+        estimatedTotalSavings:
+          type: number
+        cobraExposure:
+          type: number
+        recentCases:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransitionCase"
+        statusBreakdown:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatusCount"
+      required: [totalCases, activeCases, pendingIntake, pendingReview, closedCases, estimatedTotalSavings, cobraExposure, recentCases, statusBreakdown]
+
+    StatusCount:
+      type: object
+      properties:
+        status:
+          type: string
+        count:
+          type: integer
+      required: [status, count]
+
+    EmployerAnalytics:
+      type: object
+      properties:
+        monthlyTrend:
+          type: array
+          items:
+            $ref: "#/components/schemas/MonthlyTrendPoint"
+        departureTypeBreakdown:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatusCount"
+        planTypeAdoption:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatusCount"
+        averageSavingsPerCase:
+          type: number
+        averageDaysToComplete:
+          type: number
+        satisfactionScore:
+          type: number
+          nullable: true
+      required: [monthlyTrend, departureTypeBreakdown, planTypeAdoption, averageSavingsPerCase, averageDaysToComplete]
+
+    MonthlyTrendPoint:
+      type: object
+      properties:
+        month:
+          type: string
+        cases:
+          type: integer
+        savings:
+          type: number
+      required: [month, cases, savings]
+
+    RoiSimulationInput:
+      type: object
+      properties:
+        numDepartingEmployees:
+          type: integer
+        avgCobraPremium:
+          type: number
+        cobraElectionRate:
+          type: number
+        highCostClaimantRate:
+          type: number
+        avgMonthlyClaimExposure:
+          type: number
+        stipendAmount:
+          type: number
+        stipendDurationMonths:
+          type: integer
+        platformCostPerCase:
+          type: number
+      required: [numDepartingEmployees, avgCobraPremium, cobraElectionRate, highCostClaimantRate, avgMonthlyClaimExposure, stipendAmount, stipendDurationMonths, platformCostPerCase]
+
+    RoiSimulationResult:
+      type: object
+      properties:
+        scenarios:
+          type: array
+          items:
+            $ref: "#/components/schemas/RoiScenario"
+        monthlyTrend:
+          type: array
+          items:
+            $ref: "#/components/schemas/RoiMonthPoint"
+        breakEvenMonths:
+          type: number
+        netAnnualSavings:
+          type: number
+        totalCobraExposure:
+          type: number
+      required: [scenarios, monthlyTrend, breakEvenMonths, netAnnualSavings, totalCobraExposure]
+
+    RoiScenario:
+      type: object
+      properties:
+        name:
+          type: string
+        totalCost:
+          type: number
+        monthlyCost:
+          type: number
+        savings:
+          type: number
+        description:
+          type: string
+      required: [name, totalCost, monthlyCost, savings, description]
+
+    RoiMonthPoint:
+      type: object
+      properties:
+        month:
+          type: integer
+        cobraOnly:
+          type: number
+        withTransitionIQ:
+          type: number
+        withStipend:
+          type: number
+      required: [month, cobraOnly, withTransitionIQ, withStipend]
+
+    StipendPolicy:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        monthlyAmount:
+          type: number
+        durationMonths:
+          type: integer
+        eligibleDepartureTypes:
+          type: array
+          items:
+            type: string
+        maxTotalContribution:
+          type: number
+          nullable: true
+        reimbursementCategories:
+          type: array
+          items:
+            type: string
+        startDate:
+          type: string
+          nullable: true
+        endDate:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+      required: [id, name, monthlyAmount, durationMonths, eligibleDepartureTypes, reimbursementCategories, createdAt]
+
+    CreateStipendBody:
+      type: object
+      properties:
+        name:
+          type: string
+        monthlyAmount:
+          type: number
+        durationMonths:
+          type: integer
+        eligibleDepartureTypes:
+          type: array
+          items:
+            type: string
+        maxTotalContribution:
+          type: number
+          nullable: true
+        reimbursementCategories:
+          type: array
+          items:
+            type: string
+      required: [name, monthlyAmount, durationMonths, eligibleDepartureTypes, reimbursementCategories]
+
+    StipendListResponse:
+      type: object
+      properties:
+        stipends:
+          type: array
+          items:
+            $ref: "#/components/schemas/StipendPolicy"
+      required: [stipends]
+
+    EmployeeListResponse:
+      type: object
+      properties:
+        employees:
+          type: array
+          items:
+            $ref: "#/components/schemas/EmployeeSummary"
+        total:
+          type: integer
+      required: [employees, total]
+
+    EmployeeSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        caseStatus:
+          type: string
+        departureType:
+          type: string
+        coverageEndDate:
+          type: string
+          nullable: true
+      required: [id, name, email, caseStatus, departureType]
+
+    HealthIntake:
+      type: object
+      properties:
+        id:
+          type: integer
+        caseId:
+          type: integer
+        age:
+          type: integer
+          nullable: true
+        zipCode:
+          type: string
+          nullable: true
+        state:
+          type: string
+          nullable: true
+        county:
+          type: string
+          nullable: true
+        householdSize:
+          type: integer
+          nullable: true
+        expectedAnnualIncomeRange:
+          type: string
+          nullable: true
+        coverageEndDate:
+          type: string
+          nullable: true
+        cobraPremiumEstimate:
+          type: number
+          nullable: true
+        monthlyHealthcareBudget:
+          type: number
+          nullable: true
+        currentPlanType:
+          type: string
+          nullable: true
+        dependentCoverageNeeds:
+          type: boolean
+          nullable: true
+        doctorPreference:
+          type: boolean
+          nullable: true
+        prescriptionNeeds:
+          type: boolean
+          nullable: true
+        preferredDeductibleRange:
+          type: string
+          nullable: true
+        expectedMedicalUsage:
+          type: string
+          nullable: true
+        medicareEligible:
+          type: boolean
+          nullable: true
+        spouseCoveragePossibility:
+          type: boolean
+          nullable: true
+        coveragePriorities:
+          type: array
+          items:
+            type: string
+        completedAt:
+          type: string
+          nullable: true
+      required: [id, caseId, coveragePriorities]
+
+    SubmitIntakeBody:
+      type: object
+      properties:
+        age:
+          type: integer
+        zipCode:
+          type: string
+        state:
+          type: string
+        county:
+          type: string
+          nullable: true
+        householdSize:
+          type: integer
+        expectedAnnualIncomeRange:
+          type: string
+        coverageEndDate:
+          type: string
+          nullable: true
+        cobraPremiumEstimate:
+          type: number
+          nullable: true
+        monthlyHealthcareBudget:
+          type: number
+        currentPlanType:
+          type: string
+          nullable: true
+        dependentCoverageNeeds:
+          type: boolean
+        doctorPreference:
+          type: boolean
+        prescriptionNeeds:
+          type: boolean
+        preferredDeductibleRange:
+          type: string
+          nullable: true
+        expectedMedicalUsage:
+          type: string
+        medicareEligible:
+          type: boolean
+        spouseCoveragePossibility:
+          type: boolean
+        coveragePriorities:
+          type: array
+          items:
+            type: string
+      required: [age, zipCode, state, householdSize, expectedAnnualIncomeRange, monthlyHealthcareBudget, dependentCoverageNeeds, doctorPreference, prescriptionNeeds, expectedMedicalUsage, medicareEligible, spouseCoveragePossibility, coveragePriorities]
+
+    RecommendationItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        rank:
+          type: integer
+        planId:
+          type: integer
+        planName:
+          type: string
+        issuerName:
+          type: string
+        planType:
+          type: string
+        metalLevel:
+          type: string
+        monthlyPremium:
+          type: number
+        deductible:
+          type: number
+        outOfPocketMax:
+          type: number
+        estimatedAnnualCost:
+          type: number
+        estimatedMonthlySavingsVsCobra:
+          type: number
+        estimatedAnnualSavingsVsCobra:
+          type: number
+        matchScore:
+          type: number
+        confidenceScore:
+          type: number
+        explanation:
+          type: string
+        pros:
+          type: array
+          items:
+            type: string
+        cons:
+          type: array
+          items:
+            type: string
+        assumptions:
+          type: array
+          items:
+            type: string
+        warningFlags:
+          type: array
+          items:
+            type: string
+        recommendedNextSteps:
+          type: array
+          items:
+            type: string
+      required: [id, rank, planId, planName, issuerName, planType, metalLevel, monthlyPremium, deductible, outOfPocketMax, estimatedAnnualCost, estimatedMonthlySavingsVsCobra, estimatedAnnualSavingsVsCobra, matchScore, confidenceScore, explanation, pros, cons, assumptions, warningFlags, recommendedNextSteps]
+
+    RecommendationResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        caseId:
+          type: integer
+        status:
+          type: string
+          enum: [pending, generated, consultant_review, released, rejected]
+        generatedAt:
+          type: string
+          nullable: true
+        releasedAt:
+          type: string
+          nullable: true
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecommendationItem"
+        consultantNotes:
+          type: string
+          nullable: true
+      required: [id, caseId, status, items]
+
+    PlanComparisonResponse:
+      type: object
+      properties:
+        plans:
+          type: array
+          items:
+            $ref: "#/components/schemas/HealthPlan"
+        cobraPremium:
+          type: number
+          nullable: true
+      required: [plans]
+
+    HealthPlan:
+      type: object
+      properties:
+        id:
+          type: integer
+        planId:
+          type: string
+        issuerName:
+          type: string
+        planName:
+          type: string
+        metalLevel:
+          type: string
+          enum: [bronze, silver, gold, platinum, catastrophic]
+        planType:
+          type: string
+          enum: [hmo, ppo, epo, pos]
+        state:
+          type: string
+        county:
+          type: string
+          nullable: true
+        zipCode:
+          type: string
+          nullable: true
+        monthlyPremium:
+          type: number
+        deductible:
+          type: number
+        outOfPocketMax:
+          type: number
+        primaryCareVisit:
+          type: string
+          nullable: true
+        specialistVisit:
+          type: string
+          nullable: true
+        genericDrugCost:
+          type: string
+          nullable: true
+        networkType:
+          type: string
+          nullable: true
+        telehealthAvailable:
+          type: boolean
+        hsaEligible:
+          type: boolean
+        qualityRating:
+          type: number
+          nullable: true
+        source:
+          type: string
+        coverageYear:
+          type: integer
+      required: [id, planId, issuerName, planName, metalLevel, planType, state, monthlyPremium, deductible, outOfPocketMax, telehealthAvailable, hsaEligible, source, coverageYear]
+
+    PlanDataResponse:
+      type: object
+      properties:
+        plans:
+          type: array
+          items:
+            $ref: "#/components/schemas/HealthPlan"
+        total:
+          type: integer
+      required: [plans, total]
+
+    ChecklistResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChecklistItem"
+        deadlines:
+          $ref: "#/components/schemas/TransitionDeadlines"
+      required: [items, deadlines]
+
+    ChecklistItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        key:
+          type: string
+        label:
+          type: string
+        description:
+          type: string
+        completed:
+          type: boolean
+        dueDate:
+          type: string
+          nullable: true
+        category:
+          type: string
+      required: [id, key, label, description, completed, category]
+
+    TransitionDeadlines:
+      type: object
+      properties:
+        cobraElectionDeadline:
+          type: string
+          nullable: true
+        sepWindowEnd:
+          type: string
+          nullable: true
+        medicareReminderDate:
+          type: string
+          nullable: true
+        coverageEndDate:
+          type: string
+          nullable: true
+      required: []
+
+    UpdateChecklistBody:
+      type: object
+      properties:
+        itemId:
+          type: integer
+        completed:
+          type: boolean
+      required: [itemId, completed]
+
+    SupportRequestBody:
+      type: object
+      properties:
+        message:
+          type: string
+        requestType:
+          type: string
+      required: [message, requestType]
+
+    SurveyBody:
+      type: object
+      properties:
+        satisfactionScore:
+          type: integer
+        easeOfUseScore:
+          type: integer
+        recommendationHelpfulness:
+          type: integer
+        assistantHelpfulness:
+          type: integer
+        comments:
+          type: string
+          nullable: true
+        selectedPlanType:
+          type: string
+          nullable: true
+      required: [satisfactionScore, easeOfUseScore, recommendationHelpfulness, assistantHelpfulness]
+
+    EmployeeStipendInfo:
+      type: object
+      properties:
+        eligible:
+          type: boolean
+        stipendName:
+          type: string
+          nullable: true
+        monthlyAmount:
+          type: number
+          nullable: true
+        durationMonths:
+          type: integer
+          nullable: true
+        totalAmount:
+          type: number
+          nullable: true
+        remainingMonths:
+          type: integer
+          nullable: true
+        reimbursementCategories:
+          type: array
+          items:
+            type: string
+      required: [eligible, reimbursementCategories]
+
+    ChatMessageBody:
+      type: object
+      properties:
+        message:
+          type: string
+        conversationId:
+          type: integer
+          nullable: true
+      required: [message]
+
+    ChatResponse:
+      type: object
+      properties:
+        conversationId:
+          type: integer
+        message:
+          type: string
+        sources:
+          type: array
+          items:
+            $ref: "#/components/schemas/KnowledgeSource"
+        confidenceScore:
+          type: number
+        refused:
+          type: boolean
+        refusalReason:
+          type: string
+          nullable: true
+      required: [conversationId, message, sources, confidenceScore, refused]
+
+    KnowledgeSource:
+      type: object
+      properties:
+        documentId:
+          type: integer
+        title:
+          type: string
+        excerpt:
+          type: string
+      required: [documentId, title, excerpt]
+
+    ConversationsResponse:
+      type: object
+      properties:
+        conversations:
+          type: array
+          items:
+            $ref: "#/components/schemas/ConversationSummary"
+      required: [conversations]
+
+    ConversationSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        messageCount:
+          type: integer
+        lastMessageAt:
+          type: string
+      required: [id, title, messageCount, lastMessageAt]
+
+    ConversationDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/ConversationMessage"
+      required: [id, title, messages]
+
+    ConversationMessage:
+      type: object
+      properties:
+        id:
+          type: integer
+        role:
+          type: string
+          enum: [user, assistant]
+        content:
+          type: string
+        sources:
+          type: array
+          items:
+            $ref: "#/components/schemas/KnowledgeSource"
+        createdAt:
+          type: string
+      required: [id, role, content, sources, createdAt]
+
+    ReviewBody:
+      type: object
+      properties:
+        action:
+          type: string
+          enum: [approve, request_regeneration, reject]
+        notes:
+          type: string
+          nullable: true
+      required: [action]
+
+    ConsultantDashboard:
+      type: object
+      properties:
+        pendingReviews:
+          type: integer
+        completedReviews:
+          type: integer
+        avgReviewTime:
+          type: number
+        recentReviews:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReviewQueueItem"
+      required: [pendingReviews, completedReviews, avgReviewTime, recentReviews]
+
+    ReviewQueueResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReviewQueueItem"
+        total:
+          type: integer
+      required: [items, total]
+
+    ReviewQueueItem:
+      type: object
+      properties:
+        caseId:
+          type: integer
+        employeeName:
+          type: string
+        employerName:
+          type: string
+        departureType:
+          type: string
+        status:
+          type: string
+        recommendationGeneratedAt:
+          type: string
+          nullable: true
+        flagCount:
+          type: integer
+      required: [caseId, employeeName, employerName, departureType, status, flagCount]
+
+    ConsultantCaseReview:
+      type: object
+      properties:
+        case:
+          $ref: "#/components/schemas/TransitionCase"
+        recommendation:
+          $ref: "#/components/schemas/RecommendationResponse"
+        intakeSummary:
+          $ref: "#/components/schemas/IntakeSummary"
+        riskFlags:
+          type: array
+          items:
+            type: string
+        previousReviews:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReviewRecord"
+      required: [case, recommendation, intakeSummary, riskFlags, previousReviews]
+
+    IntakeSummary:
+      type: object
+      properties:
+        completed:
+          type: boolean
+        age:
+          type: integer
+          nullable: true
+        state:
+          type: string
+          nullable: true
+        householdSize:
+          type: integer
+          nullable: true
+        incomeRange:
+          type: string
+          nullable: true
+        medicareEligible:
+          type: boolean
+          nullable: true
+        hasPrescriptionNeeds:
+          type: boolean
+          nullable: true
+        coveragePriorities:
+          type: array
+          items:
+            type: string
+      required: [completed, coveragePriorities]
+
+    ReviewRecord:
+      type: object
+      properties:
+        id:
+          type: integer
+        action:
+          type: string
+        notes:
+          type: string
+          nullable: true
+        reviewedAt:
+          type: string
+      required: [id, action, reviewedAt]
+
+    AdminDashboard:
+      type: object
+      properties:
+        totalEmployers:
+          type: integer
+        totalUsers:
+          type: integer
+        totalCases:
+          type: integer
+        totalPlans:
+          type: integer
+        activeAiEvals:
+          type: integer
+        recentAuditEvents:
+          type: integer
+        systemHealth:
+          type: string
+      required: [totalEmployers, totalUsers, totalCases, totalPlans, activeAiEvals, recentAuditEvents, systemHealth]
+
+    EmployerListResponse:
+      type: object
+      properties:
+        employers:
+          type: array
+          items:
+            $ref: "#/components/schemas/EmployerSummary"
+        total:
+          type: integer
+      required: [employers, total]
+
+    EmployerSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        industry:
+          type: string
+          nullable: true
+        totalCases:
+          type: integer
+        activeCases:
+          type: integer
+        createdAt:
+          type: string
+      required: [id, name, totalCases, activeCases, createdAt]
+
+    UserListResponse:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserProfile"
+        total:
+          type: integer
+      required: [users, total]
+
+    AuditLogResponse:
+      type: object
+      properties:
+        logs:
+          type: array
+          items:
+            $ref: "#/components/schemas/AuditLogEntry"
+        total:
+          type: integer
+      required: [logs, total]
+
+    AuditLogEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+          nullable: true
+        userEmail:
+          type: string
+          nullable: true
+        action:
+          type: string
+        resourceType:
+          type: string
+          nullable: true
+        resourceId:
+          type: integer
+          nullable: true
+        details:
+          type: string
+          nullable: true
+        ipAddress:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+      required: [id, action, createdAt]
+
+    EvaluationListResponse:
+      type: object
+      properties:
+        runs:
+          type: array
+          items:
+            $ref: "#/components/schemas/EvaluationRun"
+        total:
+          type: integer
+      required: [runs, total]
+
+    EvaluationRun:
+      type: object
+      properties:
+        id:
+          type: integer
+        runAt:
+          type: string
+        totalTests:
+          type: integer
+        passed:
+          type: integer
+        failed:
+          type: integer
+        passRate:
+          type: number
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/EvaluationResult"
+      required: [id, runAt, totalTests, passed, failed, passRate, results]
+
+    EvaluationResult:
+      type: object
+      properties:
+        id:
+          type: integer
+        testName:
+          type: string
+        category:
+          type: string
+          enum: [recommendation, assistant, privacy, safety]
+        passed:
+          type: boolean
+        score:
+          type: number
+          nullable: true
+        details:
+          type: string
+          nullable: true
+        input:
+          type: string
+          nullable: true
+        expectedOutput:
+          type: string
+          nullable: true
+        actualOutput:
+          type: string
+          nullable: true
+      required: [id, testName, category, passed]
+
+    EvaluationRunResult:
+      type: object
+      properties:
+        run:
+          $ref: "#/components/schemas/EvaluationRun"
+        message:
+          type: string
+      required: [run, message]
+
+    KnowledgeDocListResponse:
+      type: object
+      properties:
+        documents:
+          type: array
+          items:
+            $ref: "#/components/schemas/KnowledgeDocument"
+        total:
+          type: integer
+      required: [documents, total]
+
+    KnowledgeDocument:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        category:
+          type: string
+        chunkCount:
+          type: integer
+        createdAt:
+          type: string
+      required: [id, title, category, chunkCount, createdAt]
+
+    RecommendationSettings:
+      type: object
+      properties:
+        premiumWeight:
+          type: number
+        deductibleWeight:
+          type: number
+        outOfPocketMaxWeight:
+          type: number
+        estimatedAnnualCostWeight:
+          type: number
+        budgetMatchWeight:
+          type: number
+        metalLevelWeight:
+          type: number
+        prescriptionWeight:
+          type: number
+        doctorNetworkWeight:
+          type: number
+        qualityRatingWeight:
+          type: number
+        updatedAt:
+          type: string
+          nullable: true
+      required: [premiumWeight, deductibleWeight, outOfPocketMaxWeight, estimatedAnnualCostWeight, budgetMatchWeight, metalLevelWeight, prescriptionWeight, doctorNetworkWeight, qualityRatingWeight]
+
+    EmployeeDashboard:
+      type: object
+      properties:
+        caseStatus:
+          type: string
+        employerName:
+          type: string
+        departureType:
+          type: string
+        coverageEndDate:
+          type: string
+          nullable: true
+        cobraPremiumEstimate:
+          type: number
+          nullable: true
+        intakeCompleted:
+          type: boolean
+        recommendationsReady:
+          type: boolean
+        recommendationsReleased:
+          type: boolean
+        stipendEligible:
+          type: boolean
+        stipendMonthlyAmount:
+          type: number
+          nullable: true
+        checklistProgress:
+          type: integer
+        totalChecklistItems:
+          type: integer
+        daysUntilCoverageEnd:
+          type: integer
+          nullable: true
+        cobraElectionDeadline:
+          type: string
+          nullable: true
+        estimatedSavings:
+          type: number
+          nullable: true
+      required: [caseStatus, employerName, departureType, intakeCompleted, recommendationsReady, recommendationsReleased, stipendEligible, checklistProgress, totalChecklistItems]
+
+    EmployerMember:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required: [id, name]
