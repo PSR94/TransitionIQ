@@ -116,16 +116,15 @@ The Drizzle schema in `lib/db/src/schema` includes:
 
 Seeded data lives in `scripts/src/seed.ts`. Supporting notices are in `data/`.
 
-## Demo Output Screenshots
+## Demo Screenshots
 
-The original export did not include raster screenshot files. To keep the demo output visible in the README, this repository includes preserved SVG previews based on the implemented screens. Replace these with captured `screenshots/*.png` files after running the seeded local app if you want browser-captured images.
+These committed PNG assets keep the attached demo output screens visible in the README. Run the seeded app locally if you want to capture fresh browser screenshots from your own machine.
 
-![Login demo output preview](docs/previews/01-login.svg)
-![Employer dashboard demo output preview](docs/previews/02-employer-dashboard.svg)
-![Employee intake demo output preview](docs/previews/03-employee-intake.svg)
-![Recommendation options demo output preview](docs/previews/04-recommendations.svg)
-![Consultant review demo output preview](docs/previews/05-consultant-review.svg)
-![Admin audit demo output preview](docs/previews/06-admin-audit.svg)
+![Login demo screenshot](screenshots/01-login-demo.png)
+![Employer dashboard demo screenshot](screenshots/02-employer-dashboard-demo.png)
+![ROI simulator demo screenshot](screenshots/03-roi-simulator-demo.png)
+![Consultant dashboard demo screenshot](screenshots/04-consultant-dashboard-demo.png)
+![Admin dashboard demo screenshot](screenshots/05-admin-dashboard-demo.png)
 
 ## API Overview
 
@@ -203,7 +202,7 @@ Run tests after `pnpm seed` so the synthetic database records exist. If PostgreS
 - Demo plan samples are not official Marketplace data.
 - The Coverage Guide chat is optional and returns a local fallback unless `OPENAI_API_KEY` is configured.
 - Email delivery is optional and logs previews unless `RESEND_API_KEY` is configured.
-- Demo output previews are SVG assets, not browser-captured PNG screenshots.
+- Demo screenshot assets are committed for README visibility; run the seeded app locally to capture fresh browser screenshots.
 - This demo is not production hardened for regulated data or compliance use.
 
 ## Unpack And Run An Archive
