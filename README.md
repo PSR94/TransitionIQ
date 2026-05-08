@@ -118,13 +118,19 @@ Seeded data lives in `scripts/src/seed.ts`. Supporting notices are in `data/`.
 
 ## Demo Screenshots
 
-These committed PNG assets keep the attached demo output screens visible in the README. Run the seeded app locally if you want to capture fresh browser screenshots from your own machine.
+These are the real demo screenshots captured from the local demo workflow.
 
-![Login demo screenshot](screenshots/01-login-demo.png)
-![Employer dashboard demo screenshot](screenshots/02-employer-dashboard-demo.png)
-![ROI simulator demo screenshot](screenshots/03-roi-simulator-demo.png)
-![Consultant dashboard demo screenshot](screenshots/04-consultant-dashboard-demo.png)
-![Admin dashboard demo screenshot](screenshots/05-admin-dashboard-demo.png)
+![Login demo screenshot](screenshots/01-login.png)
+![Employer dashboard demo screenshot](screenshots/02-employer-dashboard.png)
+![ROI simulator demo screenshot](screenshots/03-roi-simulator.png)
+![Employee dashboard demo screenshot](screenshots/04-employee-dashboard.png)
+![Employee intake demo screenshot](screenshots/05-employee-intake.png)
+![Plan recommendations demo screenshot](screenshots/06-plan-recommendations.png)
+![Coverage guide demo screenshot](screenshots/07-coverage-guide.png)
+![Employee checklist demo screenshot](screenshots/08-employee-checklist.png)
+![Stipend planning demo screenshot](screenshots/09-stipend-planning.png)
+![Consultant dashboard demo screenshot](screenshots/10-consultant-dashboard.png)
+![Admin dashboard demo screenshot](screenshots/11-admin-dashboard.png)
 
 ## API Overview
 
@@ -202,7 +208,7 @@ Run tests after `pnpm seed` so the synthetic database records exist. If PostgreS
 - Demo plan samples are not official Marketplace data.
 - The Coverage Guide chat is optional and returns a local fallback unless `OPENAI_API_KEY` is configured.
 - Email delivery is optional and logs previews unless `RESEND_API_KEY` is configured.
-- Demo screenshot assets are committed for README visibility; run the seeded app locally to capture fresh browser screenshots.
+- Screenshots show the seeded local demo workflow and should be refreshed when the UI changes materially.
 - This demo is not production hardened for regulated data or compliance use.
 
 ## Unpack And Run An Archive
