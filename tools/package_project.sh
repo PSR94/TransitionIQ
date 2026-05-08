@@ -19,8 +19,12 @@ EXCLUDES=(
   --exclude='./coverage'
   --exclude='./dist'
   --exclude='./artifacts/*/dist'
+  --exclude='./Updated Screenshot'
+  --exclude='./.cache'
+  --exclude='./.local'
   --exclude='./**/*.tsbuildinfo'
   --exclude='./.DS_Store'
+  --exclude='./**/.DS_Store'
   --exclude='./*.log'
 )
 
@@ -29,7 +33,8 @@ tar "${EXCLUDES[@]}" -czf dist/transitioniq-complete.tar.gz .
 if command -v zip >/dev/null 2>&1; then
   zip -qr dist/transitioniq-complete.zip . \
     -x '.git/*' '.env' 'node_modules/*' '*/node_modules/*' '.venv/*' '*/__pycache__/*' \
-    '.pytest_cache/*' 'coverage/*' 'dist/*' 'artifacts/*/dist/*' '*.tsbuildinfo' '.DS_Store' '*.log'
+    '.pytest_cache/*' 'coverage/*' 'dist/*' 'artifacts/*/dist/*' 'Updated Screenshot/*' \
+    '.cache/*' '.local/*' '*.tsbuildinfo' '.DS_Store' '*/.DS_Store' '*.log'
 else
   echo "zip command not found" >&2
   exit 1

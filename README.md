@@ -1,28 +1,77 @@
 # TransitionIQ
 
-## Workforce Health Transition Navigator
+**Workforce Health Transition Navigator**
 
-TransitionIQ is a local-first demo application for HR and benefits teams supporting employees through health coverage transitions. It combines synthetic transition cases, COBRA estimate comparison, Marketplace-style demo plan samples, stipend planning, coverage gap detection, consultant review, employee checklists, and audit logs.
+[![CI](https://github.com/PSR94/TransitionIQ/actions/workflows/ci.yml/badge.svg)](https://github.com/PSR94/TransitionIQ/actions/workflows/ci.yml)
+![Node](https://img.shields.io/badge/node-%3E%3D20-0f766e)
+![pnpm](https://img.shields.io/badge/pnpm-%3E%3D10-f59e0b)
+![License](https://img.shields.io/badge/license-MIT-334155)
 
-This repository is designed to run outside hosted IDEs with normal local commands.
+TransitionIQ is a local-first demo application for HR and benefits teams managing employee health coverage transitions. It gives employers, departing employees, consultants, and platform admins a shared workflow for estimating COBRA exposure, comparing demo coverage options, planning stipends, detecting coverage gaps, reviewing recommendations, and preserving audit history.
 
-## Important Notice
+The project is intentionally portable: clone it, configure PostgreSQL, seed synthetic data, and run the web app plus API with standard `pnpm` commands.
 
-All data in this project is synthetic. Demo plan rows are labeled and stored as demo samples; they are not official Marketplace data. TransitionIQ is not a broker replacement, enrollment platform, medical advice product, legal advice product, benefits guarantee engine, or production compliance system. Coverage estimates require review by licensed benefits professionals and verification against official plan documents.
+![Employer dashboard screenshot](screenshots/02-employer-dashboard.png)
 
-## What Works Today
+## Contents
 
-- Demo login for employer, employee, consultant, and admin roles
-- Employer dashboard, case list, analytics, stipend policies, and ROI simulator
-- Employee dashboard, intake, recommendation/options page, checklist, stipend view, and optional Coverage Guide chat
-- Consultant dashboard, review queue, review detail, approve/reject/regeneration workflow
-- Admin dashboard, audit logs, knowledge base, evaluation runner, and recommendation settings
-- PostgreSQL schema managed by Drizzle
-- Synthetic seed data for employers, users, cases, plan samples, recommendations, checklists, surveys, knowledge docs, and audit logs
-- API smoke tests for login, health, seeded cases, intake, recommendation estimates, ROI, review actions, and audit logs
-- Repository audit and archive packaging scripts
+- [What It Does](#what-it-does)
+- [Product Boundaries](#product-boundaries)
+- [Demo Tour](#demo-tour)
+- [Local Quickstart](#local-quickstart)
+- [Demo Accounts](#demo-accounts)
+- [Architecture](#architecture)
+- [Data And Safety](#data-and-safety)
+- [API Surface](#api-surface)
+- [Repository Map](#repository-map)
+- [Quality Gates](#quality-gates)
+- [Packaging](#packaging)
+- [Known Limits](#known-limits)
 
-## Local Setup
+## What It Does
+
+TransitionIQ models a practical coverage-transition workflow:
+
+- Employers can review transition cases, analytics, stipend policies, and ROI scenarios.
+- Employees can complete an intake, review estimated plan options, track checklist items, and view stipend support.
+- Consultants can review warnings, assumptions, and ranked options before releasing guidance.
+- Admins can inspect audit logs, knowledge documents, recommendation settings, and evaluation runs.
+- The API stores deterministic demo data in PostgreSQL through Drizzle and exposes a documented OpenAPI contract.
+
+This is a serious local demo, not a production benefits platform. The value is in the end-to-end workflow, seeded data model, API contract, and reviewable implementation.
+
+## Product Boundaries
+
+All data in this repository is synthetic. Demo plan samples are not official Marketplace records and are not suitable for enrollment decisions.
+
+TransitionIQ is not:
+
+- a broker replacement
+- an enrollment platform
+- a medical, legal, or tax advice product
+- a benefits guarantee engine
+- a compliance-certified production system
+
+Coverage estimates require licensed benefits review and verification against official plan documents.
+
+## Demo Tour
+
+The screenshots below are real captures from the seeded local demo workflow.
+
+| Login and employer workflow | Employee workflow |
+|---|---|
+| ![Login screenshot](screenshots/01-login.png) | ![Employee dashboard screenshot](screenshots/04-employee-dashboard.png) |
+| ![Employer dashboard screenshot](screenshots/02-employer-dashboard.png) | ![Employee intake screenshot](screenshots/05-employee-intake.png) |
+| ![ROI simulator screenshot](screenshots/03-roi-simulator.png) | ![Plan recommendations screenshot](screenshots/06-plan-recommendations.png) |
+| ![Stipend planning screenshot](screenshots/09-stipend-planning.png) | ![Coverage guide screenshot](screenshots/07-coverage-guide.png) |
+
+| Review and administration |
+|---|
+| ![Employee checklist screenshot](screenshots/08-employee-checklist.png) |
+| ![Consultant dashboard screenshot](screenshots/10-consultant-dashboard.png) |
+| ![Admin dashboard screenshot](screenshots/11-admin-dashboard.png) |
+
+## Local Quickstart
 
 Prerequisites:
 
@@ -30,18 +79,11 @@ Prerequisites:
 - pnpm 10 or newer
 - PostgreSQL 14 or newer
 
-Create a local database and configure environment variables:
-
 ```bash
-createdb transitioniq
+git clone https://github.com/PSR94/TransitionIQ.git
+cd TransitionIQ
 cp .env.example .env
-```
-
-Edit `.env` if your PostgreSQL username, password, host, or port differs.
-
-Install, seed, and run:
-
-```bash
+createdb transitioniq
 pnpm install
 pnpm seed
 pnpm dev
@@ -49,9 +91,13 @@ pnpm dev
 
 Default local URLs:
 
-- Web app: `http://localhost:5173`
-- API: `http://localhost:3001`
-- Health check: `http://localhost:3001/api/healthz`
+| Service | URL |
+|---|---|
+| Web app | `http://localhost:5173` |
+| API | `http://localhost:3001` |
+| Health check | `http://localhost:3001/api/healthz` |
+
+If your PostgreSQL user, password, host, or port differs, update `DATABASE_URL` in `.env`.
 
 ## Environment Variables
 
@@ -62,45 +108,48 @@ Default local URLs:
 | `PORT` | No | `3001` | API server port |
 | `WEB_PORT` | No | `5173` | Vite dev server port |
 | `VITE_API_TARGET` | No | `http://localhost:3001` | Web dev proxy target |
-| `OPENAI_API_KEY` | No | unset | Optional Coverage Guide chat and richer explanation adapter |
-| `OPENAI_BASE_URL` | No | unset | Optional custom OpenAI-compatible endpoint |
-| `RESEND_API_KEY` | No | unset | Optional real email delivery; otherwise email logs are previewed |
+| `OPENAI_API_KEY` | No | unset | Optional Coverage Guide adapter |
+| `OPENAI_BASE_URL` | No | unset | Optional OpenAI-compatible endpoint |
+| `RESEND_API_KEY` | No | unset | Optional email delivery; otherwise notifications are logged |
 
-## Demo Logins
+## Demo Accounts
 
 All demo accounts use `demo1234`.
 
-| Role | Email | Main Areas |
+| Role | Email | Areas |
 |---|---|---|
 | Employer | `hr.demo@acmecorp.com` | Dashboard, cases, analytics, stipends, ROI |
-| Employee | `james.chen@demo.com` | Dashboard, intake, options, checklist, stipend |
+| Employee | `james.chen@demo.com` | Dashboard, intake, options, checklist, stipend, guide |
 | Consultant | `consultant.demo@transitioniq.com` | Review queue and review detail |
 | Admin | `admin@transitioniq.com` | Audit logs, knowledge base, evaluations, settings |
-
-## Core Workflows
-
-1. Employer opens or reviews a synthetic transition case.
-2. Employee completes health transition intake.
-3. The backend generates deterministic coverage option estimates from seeded demo plan samples.
-4. Consultant reviews warning flags, notes, assumptions, and ranked options.
-5. Approved options are released to the employee dashboard.
-6. Audit logs record login, intake, recommendation, review, and admin actions.
-7. Employer analytics and ROI simulator use seeded case values and deterministic calculations.
 
 ## Architecture
 
 ![Architecture diagram](docs/architecture.svg)
 
-Additional diagrams:
+TransitionIQ is a pnpm workspace with a Vite React frontend, Express API, Drizzle/PostgreSQL data layer, OpenAPI contract, generated API clients, seed utilities, smoke tests, and packaging scripts.
 
+| Layer | Location | Responsibility |
+|---|---|---|
+| Web app | `artifacts/transitioniq` | Role-based React UI and dashboard workflows |
+| API server | `artifacts/api-server` | Auth, dashboards, intake, recommendations, reviews, audit, admin routes |
+| Database package | `lib/db` | Drizzle schema, database client, typed tables |
+| API contract | `lib/api-spec/openapi.yaml` | Source OpenAPI contract |
+| Generated clients | `lib/api-client-react`, `lib/api-zod` | Orval-generated React Query and Zod helpers |
+| Seed tooling | `scripts/src/seed.ts` | Synthetic employers, users, cases, plans, recommendations, audit records |
+| Verification | `tests`, `tools` | Smoke tests, provenance audit, empty-folder check, archive packaging |
+
+Additional docs:
+
+- [Project brief](docs/project_brief.md)
+- [Local runbook](docs/local_runbook.md)
 - [Transition journey](docs/transition_journey.svg)
 - [Coverage option flow](docs/coverage_option_flow.svg)
 - [Review workflow](docs/review_workflow.svg)
-- [Local runbook](docs/local_runbook.md)
 
-## Data Model Overview
+## Data And Safety
 
-The Drizzle schema in `lib/db/src/schema` includes:
+The seeded schema covers:
 
 - `users` and `employers`
 - `transition_cases`
@@ -114,25 +163,9 @@ The Drizzle schema in `lib/db/src/schema` includes:
 - `knowledge_documents` and `knowledge_chunks`
 - `evaluation_runs` and `evaluation_results`
 
-Seeded data lives in `scripts/src/seed.ts`. Supporting notices are in `data/`.
+Supporting data notices live in `data/`. The seed script is deterministic so demos, tests, screenshots, and API smoke checks stay aligned.
 
-## Demo Screenshots
-
-These are the real demo screenshots captured from the local demo workflow.
-
-![Login demo screenshot](screenshots/01-login.png)
-![Employer dashboard demo screenshot](screenshots/02-employer-dashboard.png)
-![ROI simulator demo screenshot](screenshots/03-roi-simulator.png)
-![Employee dashboard demo screenshot](screenshots/04-employee-dashboard.png)
-![Employee intake demo screenshot](screenshots/05-employee-intake.png)
-![Plan recommendations demo screenshot](screenshots/06-plan-recommendations.png)
-![Coverage guide demo screenshot](screenshots/07-coverage-guide.png)
-![Employee checklist demo screenshot](screenshots/08-employee-checklist.png)
-![Stipend planning demo screenshot](screenshots/09-stipend-planning.png)
-![Consultant dashboard demo screenshot](screenshots/10-consultant-dashboard.png)
-![Admin dashboard demo screenshot](screenshots/11-admin-dashboard.png)
-
-## API Overview
+## API Surface
 
 All API routes are mounted under `/api`.
 
@@ -146,72 +179,78 @@ All API routes are mounted under `/api`.
 | Admin | `GET /api/admin/audit-logs`, `GET /api/admin/evaluations`, `POST /api/admin/evaluations/run` |
 | Optional guide | `POST /api/assistant/chat` |
 
-The OpenAPI source is `lib/api-spec/openapi.yaml`. Generated Orval clients are kept under `lib/api-client-react/src/generated` and `lib/api-zod/src/generated`.
+The OpenAPI source is `lib/api-spec/openapi.yaml`. Generated Orval files are checked in because the app imports them directly.
 
-## Folder Structure
+## Repository Map
 
 ```text
 .
   artifacts/
-    api-server/        Express API
+    api-server/        Express API service
     transitioniq/      React + Vite web app
   data/                Synthetic data notices
-  docs/                Diagrams, previews, and local runbook
+  docs/                Architecture docs, diagrams, and runbook
   lib/
-    api-client-react/  Orval-generated React Query client
-    api-spec/          OpenAPI spec and Orval config
-    api-zod/           Orval-generated Zod schemas
+    api-client-react/  Generated React Query client
+    api-spec/          OpenAPI contract and generation config
+    api-zod/           Generated Zod schemas
     db/                Drizzle schema and database client
+  screenshots/         Real local demo captures used by the README
   scripts/             Seed utilities
-  tests/               API smoke tests
+  tests/               API smoke coverage
   tools/               Audit and packaging scripts
 ```
 
-## Commands
+## Quality Gates
+
+Use the same commands locally that CI runs:
 
 ```bash
 pnpm install
-pnpm seed
-pnpm dev
 pnpm typecheck
 pnpm test
 pnpm build
 pnpm audit:repo
+```
+
+The smoke test suite covers:
+
+- health endpoint
+- demo login for all roles
+- seeded employer case loading
+- employer analytics loading
+- employee intake validation path
+- deterministic recommendation generation
+- ROI calculation
+- consultant review action
+- audit log retrieval
+
+Run `pnpm seed` first when you want DB-backed tests to exercise the full seeded workflow. If PostgreSQL is unavailable, DB-backed smoke tests are skipped and the health endpoint still runs.
+
+## Packaging
+
+```bash
 pnpm package
 ```
 
-`pnpm package` creates:
+This creates:
 
 - `dist/transitioniq-complete.zip`
 - `dist/transitioniq-complete.tar.gz`
 - `dist/archive_manifest.txt`
 
-## Tests And Validation
+The package script excludes local databases, dependencies, build caches, raw source screenshot drop folders, logs, and generated archives.
 
-The Vitest suite in `tests/api-smoke.test.ts` covers:
+## Known Limits
 
-- health endpoint
-- demo login for all roles
-- seeded employer case loading
-- analytics loading
-- employee intake validation path
-- deterministic recommendation/option estimate generation
-- ROI simulator calculation
-- consultant review action
-- audit log retrieval
-
-Run tests after `pnpm seed` so the synthetic database records exist. If PostgreSQL is not reachable, the DB-backed smoke tests are skipped and the health endpoint test still runs.
-
-## Known Limitations
-
-- The app uses local PostgreSQL, not an embedded database.
+- The app expects local PostgreSQL; it does not ship an embedded database.
 - Demo plan samples are not official Marketplace data.
-- The Coverage Guide chat is optional and returns a local fallback unless `OPENAI_API_KEY` is configured.
+- The Coverage Guide returns deterministic fallback responses unless `OPENAI_API_KEY` is configured.
 - Email delivery is optional and logs previews unless `RESEND_API_KEY` is configured.
-- Screenshots show the seeded local demo workflow and should be refreshed when the UI changes materially.
-- This demo is not production hardened for regulated data or compliance use.
+- Screenshots should be refreshed when UI flows change materially.
+- The demo is not hardened for regulated data or compliance use.
 
-## Unpack And Run An Archive
+## Archive Quickstart
 
 ```bash
 mkdir transitioniq
